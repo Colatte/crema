@@ -157,6 +157,24 @@ CASES = [
          {"one": "uma tela", "other": "%lld telas"})}},
      'String(localized: "a.b", defaultValue: "\\(count) displays")'),
 
+    # Only the translation carries it, so rules 2 and 6 both pass and the glyph
+    # would ship to Brazilians alone — the same silent direction as SPECIFIERS.
+    ("an emoji in the pt-BR unit only", "GLYPH",
+     {"strings": {"a.b": entry("made with coffee", "feito com ☕")}},
+     'String(localized: "a.b", defaultValue: "made with coffee")'),
+
+    # A shortcut glyph is a symbol too, and refusing it is the intent: AppKit
+    # draws the key equivalent beside the title; it is never typed into it.
+    ("a command glyph typed into a menu title", "GLYPH",
+     {"strings": {"a.b": entry("Settings ⌘,", "Ajustes ⌘,")}},
+     'String(localized: "a.b", defaultValue: "Settings ⌘,")'),
+
+    # The punctuation the catalog is full of is not a symbol, and a rule that
+    # refused an em-dash would fail every second string in the app.
+    ("em-dash, ellipsis and middle dot on both sides", None,
+     {"strings": {"a.b": entry("Hi — wait… · ok", "Oi — espera… · ok")}},
+     'String(localized: "a.b", defaultValue: "Hi — wait… · ok")'),
+
     ("a defaultValue written as a multiline literal", "UNPARSED",
      {"strings": {"a.b": entry("Hi", "Oi")}},
      'String(localized: "a.b", defaultValue: """\n    Hi\n    """)'),

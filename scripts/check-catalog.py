@@ -21,13 +21,17 @@ failure mode that ships silently to a pt-BR user.
                                                           or renames a hole is a
                                                           wrong format string
                                                           served only to Brazilians
+  7. no value carries a glyph                             the sentence says it;
+                                                          VoiceOver reads the glyph
+                                                          mid-sentence, and ✓ is a
+                                                          checked item to NSMenu
 
 Rule 2 compares FORM, not text: both sides are normalized so every hole becomes one
 sentinel. It never tries to infer what a hole's TYPE would be — a regex cannot type
 a Swift expression, and an early version that guessed reported nine problems that
 were all its own fault.
 
-Two reports sit outside those six, and both say the same thing: this call site was
+Two reports sit outside those seven, and both say the same thing: this call site was
 NOT checked. A rule that quietly applies to nothing reads exactly like a rule that
 passes, so a shape these patterns cannot read is named instead of skipped.
 
@@ -38,6 +42,7 @@ import json
 import pathlib
 import re
 import sys
+import unicodedata
 
 # One sentinel per hole, on both sides. Deliberately NOT a space: with a space,
 # "Crema 1.0" in the code and "Crema%@1.0" in the catalog normalize to the same
@@ -83,6 +88,14 @@ TEXT_WITH_COMMENT = re.compile(r'Text\(\s*"([a-z][a-zA-Z0-9.]*\.[a-zA-Z0-9.]+)"\
 LOCALIZED_CALL = re.compile(r"String\(" + SKIP_BETWEEN + r"localized:")
 
 SKIP_DIRS = {".git", "build", "DerivedData", ".build"}
+
+# Rule 7 reads the Unicode general category rather than an emoji table: "Symbol,
+# other" is where every emoji lands, and also ☕, ⚠, ✓ and ⌘ — and catching ⌘ is
+# right, since a shortcut is drawn by AppKit from the key equivalent, never typed
+# into the sentence. Punctuation the catalog is full of (— … ·) is Po/Pd and stays
+# silent. The rule has no exception since the About signature became prose
+# (docs/INTERNATIONALIZATION.md, "No emoji in UI strings").
+GLYPH_CATEGORY = "So"
 
 
 def unescape(literal):
@@ -161,6 +174,11 @@ def unit_states(localization):
 
     walk(localization.get("variations") or {}, "")
     return found
+
+
+def glyphs_in(value):
+    """The characters of `value` rule 7 refuses, in order of appearance."""
+    return [c for c in value if unicodedata.category(c) == GLYPH_CATEGORY]
 
 
 def specifiers_of(value):
@@ -283,6 +301,20 @@ def main():
 
     for key in sorted(set(strings) - set(used)):
         problems.append(f"ORPHAN     {key}  (in the catalog, used nowhere in code)")
+
+    # Over EVERY entry and every leaf, not the used ones: an orphan is reported
+    # above, but an orphan that also carries a glyph should name both faults,
+    # and a plural form ships to the users who have two of something.
+    for key, entry in sorted(strings.items()):
+        for lang, localization in sorted(entry.get("localizations", {}).items()):
+            for label, value in sorted(unit_values(localization).items()):
+                glyphs = glyphs_in(value or "")
+                if glyphs:
+                    where = f"{lang} [{label}]" if label else lang
+                    problems.append(
+                        f"GLYPH      {key}  {where} carries {' '.join(glyphs)!r}: "
+                        f"a glyph in a UI string — say it as a word"
+                    )
 
     print(f"catalog: {len(strings)} keys | code: {len(used)} keys referenced")
     if not problems:
