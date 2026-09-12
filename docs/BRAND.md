@@ -93,7 +93,11 @@ The landing page's palette **is Colatte's espresso dialect**, value for value
 **One cream.** A second accent is what turns a palette into a mood board — the
 comment in the stylesheet says it and the page holds to it. There is no error
 colour, no success green, no state tint: a static landing page has nothing to
-report.
+report. And **one filled cream button per viewport**, the house's rule for the
+accent: the hero owns it on arrival, and the notch's own "Get Crema" stays
+folded until the hero's button has scrolled away. The notch itself carries
+little — the mark, three section links, that one button — because a notch is a
+small thing and the metaphor only reads while the shape stays narrow.
 
 **The app has no palette of its own.** It draws with the system's materials
 and accent (the blue in Settings is macOS's, not ours), and the only colour
