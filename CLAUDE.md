@@ -42,6 +42,7 @@ crema/                       # repository root
 │   ├── STATE-FLOW.md                # the nine mirrors, the skin skeleton, the window that never resizes and the motion vetoes
 │   ├── TESTING.md                   # the test discipline, each clause with the failure that produced it
 │   ├── INTERNATIONALIZATION.md      # the catalog gate, the reserved vocabulary and the two ceilings a string obeys
+│   ├── BRAND.md                     # the brand page: the icon is the mark, "Crema" in prose, the landing's tokens are Colatte's espresso dialect, Raleway for the licensed Sklow, the endorsement — one page, since the rest is the house's
 │   ├── CONTRACTS.md                 # the 26 named contracts the code cites by id (MG*, G*, S*, P*) — a comment saying "S4" resolves here
 │   ├── RELEASE-GUIDE.md             # how a release is published and how the Sparkle cycle is fed (incl. the single backup of the EdDSA key)
 │   ├── LOCKSCREEN-INVESTIGATION.md  # the evidence behind the lock-aware suppression: no window LEVEL reaches the shield, but the shield is a SPACE, and the private SkyLight path over it is proven on hardware — taken for one session by the opt-in now-playing widget, then removed whole (docs/DECISIONS.md: the-lock-screen-was-built-and-taken-out). The investigation stays as the record. Read the last sections before quoting this file
