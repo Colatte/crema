@@ -445,33 +445,50 @@ publish, target `main`) → title `Crema 1.1.1` → paste the notes → **Attach
 binaries**: drag **both** (`Crema.dmg` and `Crema-1.1.1.dmg`, exact names) → **Set
 as the latest release** → **Publish**.
 
-### 5.4 Publish the appcast — `git push` to `main`
+### 5.4 Publish the appcast — a short branch, a pull request to `main`
 
 `release.sh` rewrote `docs/appcast.xml` but did **not** commit it. Pages serves
-`/docs` from `main`, so publishing is a commit and a push **to `main`**:
+`/docs` from `main`, and `main` takes nothing by direct push — the protection
+binds administrators too (docs/GITHUB.md §3) — so publishing is a commit on a
+release branch and a pull request that `Build & test` gates:
 
 ```bash
+git checkout -b release/1.1.1                      # from main, which you are on after §5.3
 git add docs/appcast.xml
 git commit -m "chore(release): appcast 1.1.1"
-git push
+git push -u origin release/1.1.1
+gh pr create --base main --title "chore(release): appcast 1.1.1" --body "Feed for v1.1.1; the Release is published."
+gh pr checks --watch                                # ~4 min: the same gate release.sh ran, on the runner
+gh pr merge --merge                                 # the branch is deleted at the merge
 ```
 
-> If you work on a branch (`dev`), remember: Pages serves **`main`**. The appcast
-> only goes live once that commit reaches `main` (merge/PR or direct push,
-> whichever your flow is). The enclosure has to be published in the Release
-> **first** — otherwise the app finds the item and 404s on the download.
+The enclosure has to be published in the Release **first** (§5.3) — otherwise
+the app finds the item and 404s on the download.
 
-**The appcast commit is the last step, and it never parks on a branch.** If the
-Release is not published in the same sitting, revert the appcast commit
-(`git revert <sha>`) and regenerate it when the release actually goes out. The
-reason is that the commit does not need a release to reach the users: it goes
-live on the next push to `main` for *any* reason — a documentation merge, a
-README fix — and whoever runs that merge is not thinking about Sparkle. The
-feed then advertises a version whose Release does not exist, and every client
-that checks in that window downloads a 404. An entry left waiting is not a
-release half-done; it is a trap armed on someone else's branch, and the git
-history keeps it recoverable (`git show <sha>` restores the whole entry,
-signature included) at no cost.
+**The appcast commit reaches `main` in the same sitting as the Release, and it
+never waits anywhere else.** `release/X.Y.Z` exists for the four minutes the
+check takes; if the Release is not published in that sitting, delete the branch
+(`git push origin --delete release/1.1.1`) and regenerate the feed when the
+release actually goes out. The reason is that the commit does not need a
+release to reach the users: parked on `dev`, it goes live on the next merge to
+`main` for *any* reason — a documentation merge, a README fix — and whoever
+runs that merge is not thinking about Sparkle. The feed then advertises a
+version whose Release does not exist, and every client that checks in that
+window downloads a 404. An entry left waiting is not a release half-done; it is
+a trap armed on someone else's branch, and the git history keeps it recoverable
+(`git show <sha>` restores the whole entry, signature included) at no cost.
+
+**Then bring `main` back into `dev`** — the appcast commit is on `main` only, and
+the next `dev` → `main` pull request would otherwise show `dev` behind:
+
+```bash
+gh pr create --base dev --head main --title "Merge main into dev after 1.1.1" --body "The appcast commit, back on the integration branch."
+gh pr checks --watch && gh pr merge --merge
+```
+
+A local `git merge main` pushed to `dev` is what this used to be, and it is
+what the protection now rejects (docs/DECISIONS.md:
+the-branch-rules-bind-the-admin-too).
 
 ### 5.5 Post-publication verification
 
@@ -747,16 +764,17 @@ export CREMA_SIGN_IDENTITY="Crema Code Signing"
 open Crema.dmg                                    # local test (§5.2)
 gh release create vX.Y.Z Crema.dmg Crema-X.Y.Z.dmg \
   --target main --title "Crema X.Y.Z" --notes "…" --latest     # BOTH assets
-git add docs/appcast.xml && git commit -m "chore(release): appcast X.Y.Z"
-# publishing = that appcast commit reaching MAIN (Pages serves /docs from main). On main,
-# `git push` is enough; on a branch (dev), merge/PR — or push directly: git push origin HEAD:main
-git push                                                                                   # (on main) publishes the feed
+git checkout -b release/X.Y.Z && git add docs/appcast.xml && git commit -m "chore(release): appcast X.Y.Z"
+git push -u origin release/X.Y.Z && gh pr create --base main --title "chore(release): appcast X.Y.Z" --body "…"
+gh pr checks --watch && gh pr merge --merge     # publishing = that commit reaching MAIN (Pages serves /docs);
+                                                # no direct push exists — the protection binds admins (docs/GITHUB.md)
 # Pages takes ~1–3 min to republish; ceiling ~5 min (a wrong URL fails loudly, §5.5)
 for i in $(seq 1 20); do
   curl -fsS https://colatte.github.io/crema/appcast.xml | grep -q sparkle:version && break
   [ "$i" = 20 ] && { echo "appcast did NOT go up in ~5 min — check the URL/Pages"; break; }
   sleep 15
 done
+gh pr create --base dev --head main --title "Merge main into dev after X.Y.Z" --body "…" && gh pr checks --watch && gh pr merge --merge
 ```
 
 If the app is ever signed with Developer ID and notarized, review §3, the signing

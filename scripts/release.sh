@@ -705,8 +705,9 @@ if [[ -n "$SIGN_IDENTITY" ]]; then
     info "   gh release create $TAG \"$DMG_OUT\" \"$DMG_VERSIONED\" --target main --title \"Crema $VERSION\" --notes \"…\" --latest"
     info "     · Crema.dmg          → the README's releases/latest/download/Crema.dmg link"
     info "     · Crema-$VERSION.dmg → the appcast enclosure (its URL in docs/appcast.xml)"
-    info "3. Publish the appcast (a push to main; Pages serves /docs) — this script did NOT commit:"
-    info "   git add docs/appcast.xml && git commit -m \"chore(release): appcast $VERSION\" && git push"
+    info "3. Publish the appcast (Pages serves /docs from main, and main takes no direct push — docs/GITHUB.md) — this script did NOT commit:"
+    info "   git checkout -b release/$VERSION && git add docs/appcast.xml && git commit -m \"chore(release): appcast $VERSION\""
+    info "   git push -u origin release/$VERSION && gh pr create --base main --title \"chore(release): appcast $VERSION\" --body \"…\" && gh pr checks --watch && gh pr merge --merge"
     info "4. Confirm it is live and points at this release:"
     info "   curl -fsS https://colatte.github.io/crema/appcast.xml | grep -E 'sparkle:version|Crema-$VERSION\\.dmg'"
 else
