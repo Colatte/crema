@@ -36,8 +36,8 @@ optionally replacing the system's.
 
 ## Screenshots
 
-| Notch | Card | Classic |
-| :---: | :---: | :---: |
+|                                       Notch                                        |                                       Card                                       |                                        Classic                                         |
+| :--------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: |
 | <img src="docs/assets/notch-expanded.png" alt="Notch style, expanded now playing"> | <img src="docs/assets/card-expanded.png" alt="Card style, expanded now playing"> | <img src="docs/assets/classic-expanded.png" alt="Classic style, expanded now playing"> |
 
 Picking one is a picture, not a noun — the tiles draw each style on your own
@@ -50,10 +50,9 @@ wallpaper, and the switch lands live:
 The HUDs, in the same three voices — the thin capsule at the notch and on the
 card, and the classic's segmented bezel:
 
-| Volume at the notch | Volume on the card | Classic segments |
-| :---: | :---: | :---: |
+|                            Volume at the notch                             |                        Volume on the card                         |                                 Classic segments                                  |
+| :------------------------------------------------------------------------: | :---------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
 | <img src="docs/assets/notch-hud-volume.png" alt="Volume HUD at the notch"> | <img src="docs/assets/card-hud.png" alt="Volume HUD on the card"> | <img src="docs/assets/classic-hud.png" alt="Classic volume HUD with 16 segments"> |
-
 
 ## Features
 

@@ -75,23 +75,6 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "made with ☕ by Colatte"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "feito com ☕ por Colatte"
-          }
-        }
-      }
-    },
-    "about.signature.accessibility": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
             "value": "made with coffee by Colatte"
           }
         },

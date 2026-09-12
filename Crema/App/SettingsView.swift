@@ -421,16 +421,13 @@ private struct AboutSettingsView: View {
                 // The one string in the window someone else asks for. Selectable so
                 // it can be pasted into a report instead of transcribed.
                 .textSelection(.enabled)
-            Text(String(localized: "about.signature", defaultValue: "made with ☕ by Colatte"))
+            // Coffee as a word, never a glyph, and the brand as prose: the
+            // lettering "colatte." is the logo, and a logo is never typed in a
+            // text font (the Colatte brand manual, golden rule 2). Plain text
+            // also reads the same under VoiceOver, so no separate label.
+            Text(String(localized: "about.signature", defaultValue: "made with coffee by Colatte"))
                 .font(.callout)
                 .foregroundStyle(.secondary)
-                // The app's one deliberate glyph is branding, not state — but
-                // VoiceOver reads it as "hot beverage" mid-sentence, so it is spoken
-                // as the word it stands for.
-                .accessibilityLabel(String(
-                    localized: "about.signature.accessibility",
-                    defaultValue: "made with coffee by Colatte"
-                ))
                 .padding(.top, 8)
             HStack(spacing: 18) {
                 link(String(localized: "about.link.github", defaultValue: "GitHub"), Self.githubURL)

@@ -215,7 +215,7 @@ Depth — the catalog gate's rules, the reserved vocabulary and the two ceilings
 - **The type ramp is ONE**, and a second scale needs a published number rather than a preference (Apple's Accessibility HIG: macOS default 13 pt against minimum 10 pt).
 - **One name per concept, in each language** — the picker, tab and section labels are the source of truth. The three STYLE names are product names and stay English in both languages; `indicator` is what Crema draws, `display` is a display, and `built-in display` is reserved for the built-in panel; an external monitor carries its `localizedName` verbatim, because it is the only name the user can match to the thing on the desk.
 - **Menu strings have a ~72-character ceiling** — NSMenu sizes itself by the widest item, and a 116-character line opened the menu at ~1500 px. The break lives in the catalog, falls at a clause of the language itself, and both languages keep the same number of breaks.
-- **No emoji in UI strings that communicate state** — the glyph duplicates the sentence, VoiceOver reads it mid-sentence, and `✓` collides with NSMenu's own vocabulary, where a checkmark means a checked item (docs/DECISIONS.md: menu-status-before-warnings).
+- **No emoji in UI strings, none** — the glyph duplicates the sentence, VoiceOver reads it mid-sentence, and `✓` collides with NSMenu's own vocabulary, where a checkmark means a checked item (docs/DECISIONS.md: menu-status-before-warnings). The About signature is prose too: coffee is a word there, and the brand is written "Colatte" — the lowercase `colatte.` is the logo lettering, never typed in a text font (docs/INTERNATIONALIZATION.md).
 
 ### A claim about somebody else's API carries its source
 
